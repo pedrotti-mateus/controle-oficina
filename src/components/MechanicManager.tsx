@@ -92,7 +92,7 @@ export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: Mecha
     };
 
     return (
-        <div className="mb-6">
+        <div>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="btn flex items-center gap-2 text-sm"

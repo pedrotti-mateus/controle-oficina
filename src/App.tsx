@@ -51,23 +51,32 @@ function App() {
 
   return (
     <div className="container mx-auto p-4 pb-20">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Controle de Oficina</h1>
-        <p className="text-gray-600">Gerenciamento diário de demanda</p>
+      <header className="mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="flex items-center gap-4">
+          <img src="/logo.jpg" alt="Guerra Pedrotti" className="h-12 md:h-16 object-contain" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 leading-tight">Controle de Oficina</h1>
+            <p className="text-sm text-gray-500">Gerenciamento diário de demanda</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <MechanicManager
+            mechanics={mechanics}
+            onAdd={addMechanic}
+            onRemove={removeMechanic}
+            onReorder={reorderMechanics}
+          />
+        </div>
       </header>
 
-      <MechanicManager
-        mechanics={mechanics}
-        onAdd={addMechanic}
-        onRemove={removeMechanic}
-        onReorder={reorderMechanics}
-      />
-
-      <MonthNavigation
-        currentDate={currentDate}
-        onPrevMonth={handlePrevMonth}
-        onNextMonth={handleNextMonth}
-      />
+      <div className="flex justify-center mb-6">
+        <MonthNavigation
+          currentDate={currentDate}
+          onPrevMonth={handlePrevMonth}
+          onNextMonth={handleNextMonth}
+        />
+      </div>
 
       <div className="flex flex-col gap-8">
         {daysInMonth.map((day) => (
