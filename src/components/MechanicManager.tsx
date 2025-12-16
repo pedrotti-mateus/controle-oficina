@@ -92,7 +92,7 @@ export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: Mecha
     };
 
     return (
-        <div>
+        <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="btn flex items-center gap-2 text-sm"
@@ -102,8 +102,14 @@ export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: Mecha
             </button>
 
             {isOpen && (
-                <div className="mt-4 p-4 border rounded bg-gray-50">
-                    <h3 className="font-bold mb-4">Gerenciar Mecânicos (Arraste para reordenar)</h3>
+                <div className="absolute right-0 top-full mt-2 p-4 border rounded-lg bg-white shadow-xl z-50 w-[90vw] max-w-4xl">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-bold">Gerenciar Mecânicos (Arraste para reordenar)</h3>
+                        <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
+                            <span className="sr-only">Fechar</span>
+                            ✕
+                        </button>
+                    </div>
 
                     <DndContext
                         sensors={sensors}

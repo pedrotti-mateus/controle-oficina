@@ -4,6 +4,7 @@ import { ptBR } from 'date-fns/locale';
 import type { Mechanic, Appointment } from '../types';
 import { TIME_SLOTS, LUNCH_SLOTS } from '../constants';
 import { SlotCell } from './SlotCell';
+import { ArrowUp } from 'lucide-react';
 
 interface DayGridProps {
     date: Date;
@@ -20,14 +21,25 @@ export function DayGrid({ date, mechanics, appointments, onSlotClick, onDelete }
     // Grid template: Time Column + 1 Column per Mechanic
     const gridTemplateColumns = `80px repeat(${mechanics.length}, minmax(150px, 1fr))`;
 
+    const handleScrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
-        <div className={`day-section ${isWeekend ? 'weekend' : ''}`}>
+        <div id={`day-${date.getDate()}`} className={`day-section ${isWeekend ? 'weekend' : ''}`}>
             <div style={{ minWidth: 'fit-content' }}>
-                <div className="day-header flex items-center gap-4">
+                <div className="day-header flex items-center gap-4 pr-4">
                     <span>{format(date, 'dd/MM/yyyy')}</span>
-                    <span className="capitalize font-normal text-gray-600">
+                    <span className="uppercase text-brand-yellow font-bold">
                         {format(date, 'EEEE', { locale: ptBR })}
                     </span>
+                    <button
+                        onClick={handleScrollToTop}
+                        className="text-white hover:text-brand-yellow transition-colors p-1 rounded hover:bg-white/10"
+                        title="Voltar ao topo"
+                    >
+                        <ArrowUp size={20} />
+                    </button>
                 </div>
 
                 <div className="day-grid" style={{ gridTemplateColumns }}>

@@ -183,13 +183,20 @@ select {
 
 .modal-content {
   background-color: white;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 0.75rem;
-  width: 100%;
+  width: 95%;
   max-width: 450px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 640px) {
+  .modal-content {
+    width: 100%;
+    padding: 2rem;
+  }
 }
 
 .form-group {
@@ -211,7 +218,8 @@ select {
   padding: 0.625rem;
   border: 1px solid var(--border);
   border-radius: 0.375rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
+  /* 16px to prevent iOS zoom */
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
