@@ -12,7 +12,7 @@
 
   /* Priority Colors - Keeping these but maybe muting them slightly or making them pop against white */
   --priority-max: #ef4444;
-  --priority-high: #f59e0b;
+  --priority-high: #FCE300;
   --priority-normal: #22c55e;
   --priority-low: #3b82f6;
   --priority-zero: #ffffff;
@@ -311,9 +311,9 @@ select {
 
 .delete-btn {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  padding: 4px;
+  bottom: 2px;
+  right: 2px;
+  padding: 2px;
   background-color: white;
   border-radius: 4px;
   opacity: 0;

@@ -22,63 +22,65 @@ export function DayGrid({ date, mechanics, appointments, onSlotClick, onDelete }
 
     return (
         <div className={`day-section ${isWeekend ? 'weekend' : ''}`}>
-            <div className="day-header flex items-center gap-4">
-                <span>{format(date, 'dd/MM/yyyy')}</span>
-                <span className="capitalize font-normal text-gray-600">
-                    {format(date, 'EEEE', { locale: ptBR })}
-                </span>
-            </div>
+            <div style={{ minWidth: 'fit-content' }}>
+                <div className="day-header flex items-center gap-4">
+                    <span>{format(date, 'dd/MM/yyyy')}</span>
+                    <span className="capitalize font-normal text-gray-600">
+                        {format(date, 'EEEE', { locale: ptBR })}
+                    </span>
+                </div>
 
-            <div className="day-grid" style={{ gridTemplateColumns }}>
-                {/* Header Row */}
-                <div className="grid-header-cell bg-gray-900 border-gray-700">Horário</div>
-                {mechanics.map((mechanic) => (
-                    <div key={mechanic.id} className="grid-header-cell">
-                        {mechanic.name}
-                    </div>
-                ))}
+                <div className="day-grid" style={{ gridTemplateColumns }}>
+                    {/* Header Row */}
+                    <div className="grid-header-cell bg-gray-900 border-gray-700">Horário</div>
+                    {mechanics.map((mechanic) => (
+                        <div key={mechanic.id} className="grid-header-cell">
+                            {mechanic.name}
+                        </div>
+                    ))}
 
-                {/* Time Slots */}
-                {TIME_SLOTS.map((time) => {
-                    const isLunch = LUNCH_SLOTS.includes(time);
+                    {/* Time Slots */}
+                    {TIME_SLOTS.map((time) => {
+                        const isLunch = LUNCH_SLOTS.includes(time);
 
-                    return (
-                        <React.Fragment key={`row-${time}`}>
-                            <div className={`grid-time-cell ${isLunch ? 'bg-gray-200 text-gray-500' : ''}`}>
-                                {time}
-                            </div>
+                        return (
+                            <React.Fragment key={`row-${time}`}>
+                                <div className={`grid-time-cell ${isLunch ? 'bg-gray-200 text-gray-500' : ''}`}>
+                                    {time}
+                                </div>
 
-                            {isLunch ? (
-                                /* Lunch Row - Spans all mechanic columns or just individual disabled cells */
-                                /* The requirement says "Trave os slots... como Almoço". 
-                                   To make it look like a full row break, we can just render disabled cells. */
-                                mechanics.map((mechanic) => (
-                                    <div
-                                        key={`${dateStr}-${mechanic.id}-${time}`}
-                                        className="grid-cell bg-gray-200 flex items-center justify-center text-gray-400 font-bold text-xs cursor-not-allowed"
-                                        title="Horário de Almoço"
-                                    >
-                                        ALMOÇO
-                                    </div>
-                                ))
-                            ) : (
-                                mechanics.map((mechanic) => {
-                                    const key = `${dateStr}-${mechanic.id}-${time}`;
-                                    const appointment = appointments[key];
+                                {isLunch ? (
+                                    /* Lunch Row - Spans all mechanic columns or just individual disabled cells */
+                                    /* The requirement says "Trave os slots... como Almoço". 
+                                       To make it look like a full row break, we can just render disabled cells. */
+                                    mechanics.map((mechanic) => (
+                                        <div
+                                            key={`${dateStr}-${mechanic.id}-${time}`}
+                                            className="grid-cell bg-gray-200 flex items-center justify-center text-gray-400 font-bold text-xs cursor-not-allowed"
+                                            title="Horário de Almoço"
+                                        >
+                                            ALMOÇO
+                                        </div>
+                                    ))
+                                ) : (
+                                    mechanics.map((mechanic) => {
+                                        const key = `${dateStr}-${mechanic.id}-${time}`;
+                                        const appointment = appointments[key];
 
-                                    return (
-                                        <SlotCell
-                                            key={key}
-                                            appointment={appointment}
-                                            onClick={() => onSlotClick(dateStr, time, mechanic.id)}
-                                            onDelete={onDelete}
-                                        />
-                                    );
-                                })
-                            )}
-                        </React.Fragment>
-                    );
-                })}
+                                        return (
+                                            <SlotCell
+                                                key={key}
+                                                appointment={appointment}
+                                                onClick={() => onSlotClick(dateStr, time, mechanic.id)}
+                                                onDelete={onDelete}
+                                            />
+                                        );
+                                    })
+                                )}
+                            </React.Fragment>
+                        );
+                    })}
+                </div>
             </div>
         </div>
     );

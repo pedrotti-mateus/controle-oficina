@@ -7,6 +7,7 @@ interface EditSlotModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSave: (data: { clientName: string; serviceDescription: string; priority: Priority; endTime: string }) => void;
+    onDelete?: () => void;
     initialData?: { clientName: string; serviceDescription: string; priority: Priority };
     title: string;
     startTime: string;
@@ -20,7 +21,7 @@ const PRIORITIES: { value: Priority; label: string; colorVar: string }[] = [
     { value: 'zero', label: 'Prioridade Zero', colorVar: '--priority-zero' },
 ];
 
-export function EditSlotModal({ isOpen, onClose, onSave, initialData, title, startTime }: EditSlotModalProps) {
+export function EditSlotModal({ isOpen, onClose, onSave, onDelete, initialData, title, startTime }: EditSlotModalProps) {
     const [clientName, setClientName] = useState('');
     const [serviceDescription, setServiceDescription] = useState('');
     const [priority, setPriority] = useState<Priority>('zero');
@@ -140,6 +141,18 @@ export function EditSlotModal({ isOpen, onClose, onSave, initialData, title, sta
                     </div>
 
                     <div className="flex justify-end gap-2 mt-6">
+                        {initialData && onDelete && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    onDelete();
+                                    onClose();
+                                }}
+                                className="btn bg-red-100 text-red-600 hover:bg-red-200 border-red-200 mr-auto"
+                            >
+                                Excluir
+                            </button>
+                        )}
                         <button type="button" onClick={onClose} className="btn">
                             Cancelar
                         </button>

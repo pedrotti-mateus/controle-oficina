@@ -1,5 +1,6 @@
+
 import type { Appointment } from '../types';
-import { Trash2 } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface SlotCellProps {
     appointment?: Appointment;
@@ -21,7 +22,6 @@ export function SlotCell({ appointment, onClick, onDelete }: SlotCellProps) {
 
     // Determine text color based on background
     // Simple heuristic: dark text for light backgrounds (zero, high, normal, low), white for dark (max)
-    // Actually, let's stick to black for most, maybe white for 'max' (red) and 'low' (blue) if they are dark.
     // Based on the print, text is black even on colors. Let's keep it black for now, except maybe Red.
     // The print shows black text on Red. So black text everywhere.
 
@@ -37,7 +37,7 @@ export function SlotCell({ appointment, onClick, onDelete }: SlotCellProps) {
             className="grid-cell relative group"
             style={{ backgroundColor }}
             onClick={onClick}
-            title={appointment ? `${appointment.clientName} - ${appointment.serviceDescription}` : 'Clique para editar'}
+            title={appointment ? `${appointment.clientName} - ${appointment.serviceDescription} ` : 'Clique para editar'}
         >
             {appointment && (
                 <>
@@ -54,7 +54,7 @@ export function SlotCell({ appointment, onClick, onDelete }: SlotCellProps) {
                             className="delete-btn"
                             title="Excluir agendamento"
                         >
-                            <Trash2 size={14} />
+                            <X size={10} />
                         </button>
                     )}
                 </>

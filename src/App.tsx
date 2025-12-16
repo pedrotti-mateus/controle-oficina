@@ -54,7 +54,6 @@ function App() {
       <header className="mb-8 flex flex-col md:flex-row items-center md:items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
         <div className="flex items-center gap-2 self-start md:self-auto">
           <img src="/logo.jpg" alt="Guerra Pedrotti" className="h-6 md:h-8 object-contain" />
-          <h1 className="text-lg md:text-xl font-bold text-gray-900 leading-tight">Controle de Oficina</h1>
         </div>
 
         <div className="flex items-center gap-4 w-full md:w-auto justify-end">
@@ -92,6 +91,11 @@ function App() {
         isOpen={!!editingSlot}
         onClose={() => setEditingSlot(null)}
         onSave={handleSaveSlot}
+        onDelete={() => {
+          if (currentAppointment) {
+            deleteAppointment(currentAppointment.id);
+          }
+        }}
         initialData={currentAppointment}
         title={editingSlot ? `Editar: ${format(new Date(editingSlot.date), 'dd/MM')} - ${editingSlot.time}` : ''}
         startTime={editingSlot?.time || ''}
