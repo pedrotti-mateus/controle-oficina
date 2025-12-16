@@ -51,15 +51,13 @@ function App() {
 
   return (
     <div className="container mx-auto p-4 pb-20">
-      <header className="mb-8 flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-        <div className="flex items-center gap-3">
-          <img src="/logo.jpg" alt="Guerra Pedrotti" className="h-8 md:h-10 object-contain" />
-          <div>
-            <h1 className="text-xl font-bold text-gray-900 leading-tight">Controle de Oficina</h1>
-          </div>
+      <header className="mb-8 flex flex-col md:flex-row items-center md:items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+        <div className="flex items-center gap-2 self-start md:self-auto">
+          <img src="/logo.jpg" alt="Guerra Pedrotti" className="h-6 md:h-8 object-contain" />
+          <h1 className="text-lg md:text-xl font-bold text-gray-900 leading-tight">Controle de Oficina</h1>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full md:w-auto justify-end">
           <MechanicManager
             mechanics={mechanics}
             onAdd={addMechanic}
