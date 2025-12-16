@@ -1,0 +1,214 @@
+:root {
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  
+  /* Priority Colors */
+  --priority-max: #ef4444;    /* Red */
+  --priority-high: #f59e0b;   /* Amber/Yellow */
+  --priority-normal: #22c55e; /* Green */
+  --priority-low: #3b82f6;    /* Blue */
+  --priority-zero: #ffffff;   /* White */
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input, textarea, select {
+  font-family: inherit;
+}
+
+.container {
+  max-width: 100%;
+  padding: 1rem;
+}
+
+/* Utility classes */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
+.p-2 { padding: 0.5rem; }
+.p-4 { padding: 1rem; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.font-bold { font-weight: 700; }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-center { text-align: center; }
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.btn:hover {
+  background-color: var(--muted);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-danger {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.btn-danger:hover {
+  background-color: #fecaca;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-content {
+  background-color: var(--background);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.form-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Grid Layout Specifics */
+.day-section {
+  margin-bottom: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.day-header {
+  background-color: var(--muted);
+  padding: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-bottom: 1px solid var(--border);
+}
+
+.day-grid {
+  display: grid;
+  /* Grid template columns will be set dynamically via inline styles */
+  border-collapse: collapse;
+}
+
+.grid-header-cell {
+  background-color: #000;
+  color: #fff;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  border: 1px solid #333;
+}
+
+.grid-time-cell {
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.875rem;
+  border: 1px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-cell {
+  border: 1px solid var(--border);
+  min-height: 60px;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  overflow: hidden;
+}
+
+.grid-cell:hover {
+  opacity: 0.8;
+  outline: 2px solid var(--primary);
+  z-index: 1;
+}
+
+.weekend {
+  opacity: 0.8;
+  filter: grayscale(0.2);
+}
