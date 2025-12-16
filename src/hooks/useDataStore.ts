@@ -176,6 +176,26 @@ export function useDataStore() {
         }
     };
 
+    const deleteAppointment = async (id: string) => {
+        if (confirm('Tem certeza que deseja excluir este agendamento?')) {
+            const { error } = await supabase.from('appointments').delete().eq('id', id);
+
+            if (error) {
+                console.error('Error deleting appointment:', error);
+                return;
+            }
+
+            setAppointments((prev) => {
+                const next = { ...prev };
+                const keyToDelete = Object.keys(next).find((key) => next[key].id === id);
+                if (keyToDelete) {
+                    delete next[keyToDelete];
+                }
+                return next;
+            });
+        }
+    };
+
     const getAppointment = (date: string, time: string, mechanicId: string) => {
         const key = `${date}-${mechanicId}-${time}`;
         return appointments[key];
@@ -188,6 +208,7 @@ export function useDataStore() {
         reorderMechanics,
         appointments,
         saveAppointmentRange,
+        deleteAppointment,
         getAppointment,
         loading,
     };

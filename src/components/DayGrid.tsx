@@ -10,9 +10,10 @@ interface DayGridProps {
     mechanics: Mechanic[];
     appointments: Record<string, Appointment>;
     onSlotClick: (date: string, time: string, mechanicId: string) => void;
+    onDelete: (id: string) => void;
 }
 
-export function DayGrid({ date, mechanics, appointments, onSlotClick }: DayGridProps) {
+export function DayGrid({ date, mechanics, appointments, onSlotClick, onDelete }: DayGridProps) {
     const dateStr = format(date, 'yyyy-MM-dd');
     const isWeekend = date.getDay() === 0 || date.getDay() === 6;
 
@@ -70,6 +71,7 @@ export function DayGrid({ date, mechanics, appointments, onSlotClick }: DayGridP
                                             key={key}
                                             appointment={appointment}
                                             onClick={() => onSlotClick(dateStr, time, mechanic.id)}
+                                            onDelete={onDelete}
                                         />
                                     );
                                 })

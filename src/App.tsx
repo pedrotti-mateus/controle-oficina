@@ -9,7 +9,7 @@ import type { Priority } from './types';
 
 function App() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const { mechanics, addMechanic, removeMechanic, reorderMechanics, appointments, saveAppointmentRange, getAppointment } = useDataStore();
+  const { mechanics, addMechanic, removeMechanic, reorderMechanics, appointments, saveAppointmentRange, deleteAppointment, getAppointment } = useDataStore();
 
   const [editingSlot, setEditingSlot] = useState<{
     date: string;
@@ -77,6 +77,7 @@ function App() {
             mechanics={mechanics}
             appointments={appointments}
             onSlotClick={handleSlotClick}
+            onDelete={deleteAppointment}
           />
         ))}
       </div>
