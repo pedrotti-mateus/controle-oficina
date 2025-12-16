@@ -29,8 +29,9 @@ function App() {
     setEditingSlot({ date, time, mechanicId });
   };
 
-  const handleSaveSlot = (data: { clientName: string; serviceDescription: string; priority: Priority; endTime: string }) => {
+  const handleSaveSlot = (data: { clientName: string; serviceDescription: string; priority: Priority; endTime: string; additionalMechanics?: string[] }) => {
     if (editingSlot) {
+      // Save for the primary mechanic
       saveAppointmentRange(
         editingSlot.date,
         editingSlot.time,
@@ -42,6 +43,23 @@ function App() {
           priority: data.priority,
         }
       );
+
+      // Save for additional mechanics
+      if (data.additionalMechanics && data.additionalMechanics.length > 0) {
+        data.additionalMechanics.forEach(mechanicId => {
+          saveAppointmentRange(
+            editingSlot.date,
+            editingSlot.time,
+            data.endTime,
+            mechanicId,
+            {
+              clientName: data.clientName,
+              serviceDescription: data.serviceDescription,
+              priority: data.priority,
+            }
+          );
+        });
+      }
     }
   };
 
@@ -99,6 +117,8 @@ function App() {
         initialData={currentAppointment}
         title={editingSlot ? `Editar: ${format(new Date(editingSlot.date), 'dd/MM')} - ${editingSlot.time}` : ''}
         startTime={editingSlot?.time || ''}
+        mechanics={mechanics}
+        currentMechanicId={editingSlot?.mechanicId || ''}
       />
     </div>
   );

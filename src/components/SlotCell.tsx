@@ -14,6 +14,7 @@ const PRIORITY_COLORS: Record<string, string> = {
     normal: 'var(--priority-normal)',
     low: 'var(--priority-low)',
     zero: 'var(--priority-zero)',
+    absence: 'var(--priority-absence)',
 };
 
 export function SlotCell({ appointment, onClick, onDelete }: SlotCellProps) {

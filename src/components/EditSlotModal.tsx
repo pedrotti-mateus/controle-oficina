@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import type { Priority } from '../types';
+import type { Priority, Mechanic } from '../types';
 import { TIME_SLOTS } from '../constants';
 import { X } from 'lucide-react';
 
 interface EditSlotModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (data: { clientName: string; serviceDescription: string; priority: Priority; endTime: string }) => void;
+    onSave: (data: { clientName: string; serviceDescription: string; priority: Priority; endTime: string; additionalMechanics: string[] }) => void;
     onDelete?: () => void;
     initialData?: { clientName: string; serviceDescription: string; priority: Priority };
     title: string;
     startTime: string;
+    mechanics: Mechanic[];
+    currentMechanicId: string;
 }
 
 const PRIORITIES: { value: Priority; label: string; colorVar: string }[] = [
@@ -19,13 +21,15 @@ const PRIORITIES: { value: Priority; label: string; colorVar: string }[] = [
     { value: 'normal', label: 'Prioridade Normal', colorVar: '--priority-normal' },
     { value: 'low', label: 'Prioridade Baixa', colorVar: '--priority-low' },
     { value: 'zero', label: 'Prioridade Zero', colorVar: '--priority-zero' },
+    { value: 'absence', label: 'Ausência', colorVar: '--priority-absence' },
 ];
 
-export function EditSlotModal({ isOpen, onClose, onSave, onDelete, initialData, title, startTime }: EditSlotModalProps) {
+export function EditSlotModal({ isOpen, onClose, onSave, onDelete, initialData, title, startTime, mechanics, currentMechanicId }: EditSlotModalProps) {
     const [clientName, setClientName] = useState('');
     const [serviceDescription, setServiceDescription] = useState('');
     const [priority, setPriority] = useState<Priority>('zero');
     const [endTime, setEndTime] = useState(startTime);
+    const [selectedMechanics, setSelectedMechanics] = useState<string[]>([]);
 
     // Filter slots that are after or equal to startTime
     const availableEndTimes = TIME_SLOTS.filter(
@@ -37,12 +41,14 @@ export function EditSlotModal({ isOpen, onClose, onSave, onDelete, initialData, 
             setClientName(initialData.clientName);
             setServiceDescription(initialData.serviceDescription);
             setPriority(initialData.priority);
-            setEndTime(startTime); // Reset end time on open, or could try to infer if we had range data
+            setEndTime(startTime);
+            setSelectedMechanics([]); // Reset selection
         } else if (isOpen) {
             setClientName('');
             setServiceDescription('');
             setPriority('zero');
             setEndTime(startTime);
+            setSelectedMechanics([]);
         }
     }, [isOpen, initialData, startTime]);
 
@@ -50,8 +56,16 @@ export function EditSlotModal({ isOpen, onClose, onSave, onDelete, initialData, 
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave({ clientName, serviceDescription, priority, endTime });
+        onSave({ clientName, serviceDescription, priority, endTime, additionalMechanics: selectedMechanics });
         onClose();
+    };
+
+    const toggleMechanic = (mechanicId: string) => {
+        setSelectedMechanics(prev =>
+            prev.includes(mechanicId)
+                ? prev.filter(id => id !== mechanicId)
+                : [...prev, mechanicId]
+        );
     };
 
     return (
@@ -106,8 +120,38 @@ export function EditSlotModal({ isOpen, onClose, onSave, onDelete, initialData, 
                     </div>
 
                     <div className="form-group">
+                        <label className="form-label">Replicar para outros mecânicos (Opcional)</label>
+                        <div className="border border-gray-300 rounded-md p-2 max-h-32 overflow-y-auto bg-white shadow-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                {mechanics.filter(m => m.id !== currentMechanicId).map((mechanic) => (
+                                    <label
+                                        key={mechanic.id}
+                                        className={`flex items-center gap-2 p-1.5 rounded border cursor-pointer transition-colors ${selectedMechanics.includes(mechanic.id)
+                                            ? 'bg-yellow-50 border-brand-yellow'
+                                            : 'hover:bg-gray-50 border-gray-100'
+                                            }`}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedMechanics.includes(mechanic.id)}
+                                            onChange={() => toggleMechanic(mechanic.id)}
+                                            className="rounded border-gray-300 text-brand-yellow focus:ring-brand-yellow"
+                                        />
+                                        <span className="text-xs text-gray-700">{mechanic.name}</span>
+                                    </label>
+                                ))}
+                            </div>
+                            {mechanics.length <= 1 && (
+                                <p className="text-gray-500 text-xs text-center py-2">
+                                    Nenhum outro mecânico disponível.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="form-group">
                         <label className="form-label">Prioridade (Cor)</label>
-                        <div className="flex flex-col gap-2">
+                        <div className="grid grid-cols-2 gap-2">
                             {PRIORITIES.map((p) => (
                                 <label
                                     key={p.value}
@@ -127,14 +171,14 @@ export function EditSlotModal({ isOpen, onClose, onSave, onDelete, initialData, 
                                     />
                                     <div
                                         style={{
-                                            width: '20px',
-                                            height: '20px',
+                                            width: '16px',
+                                            height: '16px',
                                             backgroundColor: `var(${p.colorVar})`,
                                             border: '1px solid #ccc',
                                             borderRadius: '4px',
                                         }}
                                     />
-                                    <span className="text-sm">{p.label}</span>
+                                    <span className="text-xs font-medium">{p.label}</span>
                                 </label>
                             ))}
                         </div>

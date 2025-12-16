@@ -1,4 +1,4 @@
-export type Priority = 'max' | 'high' | 'normal' | 'low' | 'zero';
+export type Priority = 'max' | 'high' | 'normal' | 'low' | 'zero' | 'absence';
 
 export interface Mechanic {
   id: string;

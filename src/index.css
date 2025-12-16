@@ -16,6 +16,7 @@
   --priority-normal: #22c55e;
   --priority-low: #3b82f6;
   --priority-zero: #ffffff;
+  --priority-absence: #9ca3af;
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -186,6 +187,8 @@ select {
   border-radius: 0.75rem;
   width: 100%;
   max-width: 450px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
