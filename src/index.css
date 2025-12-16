@@ -6,14 +6,19 @@
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
   --border: #e2e8f0;
-  
+
   /* Priority Colors */
-  --priority-max: #ef4444;    /* Red */
-  --priority-high: #f59e0b;   /* Amber/Yellow */
-  --priority-normal: #22c55e; /* Green */
-  --priority-low: #3b82f6;    /* Blue */
-  --priority-zero: #ffffff;   /* White */
-  
+  --priority-max: #ef4444;
+  /* Red */
+  --priority-high: #f59e0b;
+  /* Amber/Yellow */
+  --priority-normal: #22c55e;
+  /* Green */
+  --priority-low: #3b82f6;
+  /* Blue */
+  --priority-zero: #ffffff;
+  /* White */
+
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -36,7 +41,9 @@ button {
   font-family: inherit;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: inherit;
 }
 
@@ -46,21 +53,65 @@ input, textarea, select {
 }
 
 /* Utility classes */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.justify-center { justify-content: center; }
-.gap-2 { gap: 0.5rem; }
-.gap-4 { gap: 1rem; }
-.p-2 { padding: 0.5rem; }
-.p-4 { padding: 1rem; }
-.w-full { width: 100%; }
-.h-full { height: 100%; }
-.font-bold { font-weight: 700; }
-.text-sm { font-size: 0.875rem; }
-.text-xs { font-size: 0.75rem; }
-.text-center { text-align: center; }
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-center {
+  text-align: center;
+}
 
 .btn {
   padding: 0.5rem 1rem;
@@ -129,7 +180,9 @@ input, textarea, select {
   margin-bottom: 0.25rem;
 }
 
-.form-input, .form-select, .form-textarea {
+.form-input,
+.form-select,
+.form-textarea {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid var(--border);
@@ -147,7 +200,7 @@ input, textarea, select {
   margin-bottom: 2rem;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .day-header {

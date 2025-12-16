@@ -22,9 +22,8 @@ export function useDataStore() {
             ]);
 
             if (mechanicsRes.data) {
-                setMechanics(mechanicsRes.data);
+                setMechanics(mechanicsRes.data.sort((a: any, b: any) => (a.order || 0) - (b.order || 0)));
             }
-
             if (appointmentsRes.data) {
                 const appointmentsMap: Record<string, Appointment> = {};
                 appointmentsRes.data.forEach((app: any) => {
@@ -49,9 +48,12 @@ export function useDataStore() {
     };
 
     const addMechanic = async (name: string) => {
+        // Get max order
+        const maxOrder = mechanics.length > 0 ? Math.max(...mechanics.map(m => m.order || 0)) : 0;
+
         const { data, error } = await supabase
             .from('mechanics')
-            .insert([{ name }])
+            .insert([{ name, order: maxOrder + 1 }])
             .select()
             .single();
 
@@ -86,6 +88,29 @@ export function useDataStore() {
                 });
                 return next;
             });
+        }
+    };
+
+    const reorderMechanics = async (newMechanics: Mechanic[]) => {
+        // Optimistic update
+        setMechanics(newMechanics);
+
+        // Update in DB
+        const updates = newMechanics.map((m, index) => ({
+            id: m.id,
+            name: m.name,
+            order: index + 1
+        }));
+
+        const { error } = await supabase
+            .from('mechanics')
+            .upsert(updates)
+            .select();
+
+        if (error) {
+            console.error('Error reordering mechanics:', error);
+            // Revert on error would be ideal, but for now just log
+            fetchData(); // Refetch to sync
         }
     };
 
@@ -160,6 +185,7 @@ export function useDataStore() {
         mechanics,
         addMechanic,
         removeMechanic,
+        reorderMechanics,
         appointments,
         saveAppointmentRange,
         getAppointment,

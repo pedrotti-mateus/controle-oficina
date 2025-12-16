@@ -3,6 +3,7 @@ export type Priority = 'max' | 'high' | 'normal' | 'low' | 'zero';
 export interface Mechanic {
   id: string;
   name: string;
+  order: number;
 }
 
 export interface Appointment {

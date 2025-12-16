@@ -17,7 +17,7 @@ export function DayGrid({ date, mechanics, appointments, onSlotClick }: DayGridP
     const isWeekend = date.getDay() === 0 || date.getDay() === 6;
 
     // Grid template: Time Column + 1 Column per Mechanic
-    const gridTemplateColumns = `80px repeat(${mechanics.length}, 1fr)`;
+    const gridTemplateColumns = `80px repeat(${mechanics.length}, minmax(150px, 1fr))`;
 
     return (
         <div className={`day-section ${isWeekend ? 'weekend' : ''}`}>

@@ -1,22 +1,93 @@
 import React, { useState } from 'react';
 import type { Mechanic } from '../types';
-import { Trash2, Plus, Users } from 'lucide-react';
+import { Trash2, Plus, Users, GripVertical } from 'lucide-react';
+import {
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
+} from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    useSortable,
+    horizontalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface MechanicManagerProps {
     mechanics: Mechanic[];
     onAdd: (name: string) => void;
     onRemove: (id: string) => void;
+    onReorder: (mechanics: Mechanic[]) => void;
 }
 
-export function MechanicManager({ mechanics, onAdd, onRemove }: MechanicManagerProps) {
+function SortableMechanic({ mechanic, onRemove }: { mechanic: Mechanic; onRemove: (id: string) => void }) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: mechanic.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={style}
+            className="flex items-center gap-2 bg-white px-3 py-1 rounded border shadow-sm"
+        >
+            <button {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
+                <GripVertical size={14} />
+            </button>
+            <span className="text-sm font-medium">{mechanic.name}</span>
+            <button
+                onClick={() => onRemove(mechanic.id)}
+                className="text-red-500 hover:text-red-700 p-1"
+                title="Remover mecânico"
+            >
+                <Trash2 size={14} />
+            </button>
+        </div>
+    );
+}
+
+export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: MechanicManagerProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [newName, setNewName] = useState('');
+
+    const sensors = useSensors(
+        useSensor(PointerSensor),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        })
+    );
 
     const handleAdd = (e: React.FormEvent) => {
         e.preventDefault();
         if (newName.trim()) {
             onAdd(newName.trim());
             setNewName('');
+        }
+    };
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            const oldIndex = mechanics.findIndex((m) => m.id === active.id);
+            const newIndex = mechanics.findIndex((m) => m.id === over.id);
+
+            onReorder(arrayMove(mechanics, oldIndex, newIndex));
         }
     };
 
@@ -32,25 +103,28 @@ export function MechanicManager({ mechanics, onAdd, onRemove }: MechanicManagerP
 
             {isOpen && (
                 <div className="mt-4 p-4 border rounded bg-gray-50">
-                    <h3 className="font-bold mb-4">Gerenciar Mecânicos</h3>
+                    <h3 className="font-bold mb-4">Gerenciar Mecânicos (Arraste para reordenar)</h3>
 
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {mechanics.map((mechanic) => (
-                            <div
-                                key={mechanic.id}
-                                className="flex items-center gap-2 bg-white px-3 py-1 rounded border shadow-sm"
-                            >
-                                <span className="text-sm font-medium">{mechanic.name}</span>
-                                <button
-                                    onClick={() => onRemove(mechanic.id)}
-                                    className="text-red-500 hover:text-red-700 p-1"
-                                    title="Remover mecânico"
-                                >
-                                    <Trash2 size={14} />
-                                </button>
+                    <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                    >
+                        <SortableContext
+                            items={mechanics.map(m => m.id)}
+                            strategy={horizontalListSortingStrategy}
+                        >
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {mechanics.map((mechanic) => (
+                                    <SortableMechanic
+                                        key={mechanic.id}
+                                        mechanic={mechanic}
+                                        onRemove={onRemove}
+                                    />
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                        </SortableContext>
+                    </DndContext>
 
                     <form onSubmit={handleAdd} className="flex gap-2">
                         <input
