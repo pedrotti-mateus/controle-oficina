@@ -1,8 +1,8 @@
-import { Calendar, Users, BarChart3 } from 'lucide-react';
+import { Calendar, Users, BarChart3, Settings as SettingsIcon } from 'lucide-react';
 
 interface NavbarProps {
-    currentView: 'agenda' | 'mechanics' | 'dashboard';
-    onNavigate: (view: 'agenda' | 'mechanics' | 'dashboard') => void;
+    currentView: 'agenda' | 'mechanics' | 'dashboard' | 'settings';
+    onNavigate: (view: 'agenda' | 'mechanics' | 'dashboard' | 'settings') => void;
 }
 
 export function Navbar({ currentView, onNavigate }: NavbarProps) {
@@ -39,6 +39,16 @@ export function Navbar({ currentView, onNavigate }: NavbarProps) {
             >
                 <BarChart3 size={18} />
                 <span>Dashboard</span>
+            </button>
+            <button
+                onClick={() => onNavigate('settings')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${currentView === 'settings'
+                    ? 'bg-brand-yellow text-black font-bold shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+            >
+                <SettingsIcon size={18} />
+                <span>Configurações</span>
             </button>
         </div>
     );

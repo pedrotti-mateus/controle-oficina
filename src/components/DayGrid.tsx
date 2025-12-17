@@ -26,7 +26,7 @@ export function DayGrid({ date, mechanics, appointments, onSlotClick, onDelete }
     };
 
     return (
-        <div id={`day-${date.getDate()}`} className={`day-section ${isWeekend ? 'weekend' : ''}`}>
+        <div id={`day-${date.getDate()}`} data-date={dateStr} className={`day-section ${isWeekend ? 'weekend' : ''}`}>
             <div style={{ minWidth: 'fit-content' }}>
                 <div className="day-header flex items-center gap-4 pr-4">
                     <span>{format(date, 'dd/MM/yyyy')}</span>
