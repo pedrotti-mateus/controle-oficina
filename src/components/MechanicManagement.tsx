@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Mechanic } from '../types';
-import { Trash2, Plus, Users, GripVertical } from 'lucide-react';
+import { Trash2, Plus, GripVertical } from 'lucide-react';
 import {
     DndContext,
     closestCenter,
@@ -15,18 +15,18 @@ import {
     SortableContext,
     sortableKeyboardCoordinates,
     useSortable,
-    horizontalListSortingStrategy,
+    verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-interface MechanicManagerProps {
+interface MechanicManagementProps {
     mechanics: Mechanic[];
     onAdd: (name: string) => void;
     onRemove: (id: string) => void;
     onReorder: (mechanics: Mechanic[]) => void;
 }
 
-function SortableMechanic({ mechanic, onRemove }: { mechanic: Mechanic; onRemove: (id: string) => void }) {
+function SortableMechanicRow({ mechanic, onRemove }: { mechanic: Mechanic; onRemove: (id: string) => void }) {
     const {
         attributes,
         listeners,
@@ -44,25 +44,30 @@ function SortableMechanic({ mechanic, onRemove }: { mechanic: Mechanic; onRemove
         <div
             ref={setNodeRef}
             style={style}
-            className="flex items-center gap-2 bg-white px-3 py-1 rounded border shadow-sm"
+            className="flex items-center justify-between bg-white p-4 rounded-lg border border-gray-200 shadow-sm mb-2 hover:shadow-md transition-shadow"
         >
-            <button {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600">
-                <GripVertical size={14} />
-            </button>
-            <span className="text-sm font-medium">{mechanic.name}</span>
+            <div className="flex items-center gap-4">
+                <button {...attributes} {...listeners} className="cursor-grab text-gray-400 hover:text-gray-600 p-2 hover:bg-gray-50 rounded">
+                    <GripVertical size={20} />
+                </button>
+                <div className="flex flex-col">
+                    <span className="font-bold text-lg">{mechanic.name}</span>
+                    <span className="text-xs text-gray-500">ID: {mechanic.id.slice(0, 8)}...</span>
+                </div>
+            </div>
+
             <button
                 onClick={() => onRemove(mechanic.id)}
-                className="text-red-500 hover:text-red-700 p-1"
+                className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-full transition-colors"
                 title="Remover mecânico"
             >
-                <Trash2 size={14} />
+                <Trash2 size={20} />
             </button>
         </div>
     );
 }
 
-export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: MechanicManagerProps) {
-    const [isOpen, setIsOpen] = useState(false);
+export function MechanicManagement({ mechanics, onAdd, onRemove, onReorder }: MechanicManagementProps) {
     const [newName, setNewName] = useState('');
 
     const sensors = useSensors(
@@ -92,24 +97,26 @@ export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: Mecha
     };
 
     return (
-        <div className="relative">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="btn flex items-center gap-2 text-sm"
-            >
-                <Users size={16} />
-                Gerenciar Mecânicos ({mechanics.length})
-            </button>
+        <div className="max-w-2xl mx-auto pt-8">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+                <h2 className="text-2xl font-bold mb-6">Gerenciar Mecânicos</h2>
 
-            {isOpen && (
-                <div className="absolute right-0 top-full mt-2 p-4 border rounded-lg bg-white shadow-xl z-50 w-[90vw] max-w-4xl">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-bold">Gerenciar Mecânicos (Arraste para reordenar)</h3>
-                        <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-700">
-                            <span className="sr-only">Fechar</span>
-                            ✕
-                        </button>
-                    </div>
+                <form onSubmit={handleAdd} className="flex gap-3 mb-8">
+                    <input
+                        type="text"
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        placeholder="Nome do novo mecânico"
+                        className="form-input flex-1 text-lg py-3"
+                    />
+                    <button type="submit" className="btn btn-primary flex items-center gap-2 px-6">
+                        <Plus size={20} />
+                        Adicionar
+                    </button>
+                </form>
+
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase mb-4 ml-2">Lista de Mecânicos (Arraste para reordenar)</h3>
 
                     <DndContext
                         sensors={sensors}
@@ -118,11 +125,11 @@ export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: Mecha
                     >
                         <SortableContext
                             items={mechanics.map(m => m.id)}
-                            strategy={horizontalListSortingStrategy}
+                            strategy={verticalListSortingStrategy}
                         >
-                            <div className="flex flex-wrap gap-2 mb-4">
+                            <div className="flex flex-col">
                                 {mechanics.map((mechanic) => (
-                                    <SortableMechanic
+                                    <SortableMechanicRow
                                         key={mechanic.id}
                                         mechanic={mechanic}
                                         onRemove={onRemove}
@@ -132,22 +139,13 @@ export function MechanicManager({ mechanics, onAdd, onRemove, onReorder }: Mecha
                         </SortableContext>
                     </DndContext>
 
-                    <form onSubmit={handleAdd} className="flex gap-2">
-                        <input
-                            type="text"
-                            value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            placeholder="Nome do novo mecânico"
-                            className="form-input"
-                            style={{ maxWidth: '300px' }}
-                        />
-                        <button type="submit" className="btn btn-primary flex items-center gap-1">
-                            <Plus size={16} />
-                            Adicionar
-                        </button>
-                    </form>
+                    {mechanics.length === 0 && (
+                        <p className="text-center text-gray-500 py-8">
+                            Nenhum mecânico cadastrado. Adicione um acima.
+                        </p>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
 import { useDataStore } from './hooks/useDataStore';
 import { MonthNavigation } from './components/MonthNavigation';
-import { MechanicManager } from './components/MechanicManager';
 import { DayGrid } from './components/DayGrid';
 import { EditSlotModal } from './components/EditSlotModal';
 import { AIChat } from './components/AIChat';
+import { Navbar } from './components/Navbar';
+import { Dashboard } from './components/Dashboard';
+import { MechanicManagement } from './components/MechanicManagement';
 import type { Priority } from './types';
 
 function App() {
+  const [currentView, setCurrentView] = useState<'agenda' | 'mechanics' | 'dashboard'>('agenda');
   const [currentDate, setCurrentDate] = useState(new Date());
   const { mechanics, addMechanic, removeMechanic, reorderMechanics, appointments, saveAppointmentRange, deleteAppointment, getAppointment } = useDataStore();
 
@@ -120,69 +123,77 @@ function App() {
   };
 
   return (
-    <div className="container mx-auto p-4 pb-20">
-      <header className="mb-8 flex flex-col md:flex-row items-center md:items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-        <div className="flex items-center gap-2 self-start md:self-auto">
-          <img src="/logo.jpg" alt="Guerra Pedrotti" className="h-6 md:h-8 object-contain" />
-        </div>
+    <div className="container mx-auto p-4 pb-20 pt-24">
+      <Navbar currentView={currentView} onNavigate={setCurrentView} />
 
-        <div className="flex items-center gap-4 w-full md:w-auto justify-end">
-          <MechanicManager
+      {currentView === 'agenda' && (
+        <>
+          <header className="mb-8 flex flex-col md:flex-row items-center md:items-center justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center gap-2 self-start md:self-auto">
+              <img src="/logo.jpg" alt="Guerra Pedrotti" className="h-6 md:h-8 object-contain" />
+            </div>
+          </header>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-6">
+            <MonthNavigation
+              currentDate={currentDate}
+              onPrevMonth={handlePrevMonth}
+              onNextMonth={handleNextMonth}
+            />
+
+            <div className="relative">
+              <input
+                type="date"
+                onChange={handleDateSelect}
+                className="form-input py-1 px-3 text-gray-700 font-medium cursor-pointer"
+                title="Ir para data específica"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-8">
+            {daysInMonth.map((day) => (
+              <DayGrid
+                key={day.toISOString()}
+                date={day}
+                mechanics={mechanics}
+                appointments={appointments}
+                onSlotClick={handleSlotClick}
+                onDelete={deleteAppointment}
+              />
+            ))}
+          </div>
+
+          <EditSlotModal
+            isOpen={!!editingSlot}
+            onClose={() => setEditingSlot(null)}
+            onSave={handleSaveSlot}
+            onDelete={() => {
+              if (currentAppointment) {
+                deleteAppointment(currentAppointment.id);
+              }
+            }}
+            initialData={currentAppointment}
+            title={editingSlot ? `Editar: ${format(new Date(editingSlot.date), 'dd/MM')} - ${editingSlot.time}` : ''}
+            startTime={editingSlot?.time || ''}
             mechanics={mechanics}
-            onAdd={addMechanic}
-            onRemove={removeMechanic}
-            onReorder={reorderMechanics}
+            currentMechanicId={editingSlot?.mechanicId || ''}
           />
-        </div>
-      </header>
 
-      <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-6">
-        <MonthNavigation
-          currentDate={currentDate}
-          onPrevMonth={handlePrevMonth}
-          onNextMonth={handleNextMonth}
+          <AIChat mechanics={mechanics} onSchedule={handleAISchedule} />
+        </>
+      )}
+
+      {currentView === 'mechanics' && (
+        <MechanicManagement
+          mechanics={mechanics}
+          onAdd={addMechanic}
+          onRemove={removeMechanic}
+          onReorder={reorderMechanics}
         />
+      )}
 
-        <div className="relative">
-          <input
-            type="date"
-            onChange={handleDateSelect}
-            className="form-input py-1 px-3 text-gray-700 font-medium cursor-pointer"
-            title="Ir para data específica"
-          />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-8">
-        {daysInMonth.map((day) => (
-          <DayGrid
-            key={day.toISOString()}
-            date={day}
-            mechanics={mechanics}
-            appointments={appointments}
-            onSlotClick={handleSlotClick}
-            onDelete={deleteAppointment}
-          />
-        ))}
-      </div>
-
-      <EditSlotModal
-        isOpen={!!editingSlot}
-        onClose={() => setEditingSlot(null)}
-        onSave={handleSaveSlot}
-        onDelete={() => {
-          if (currentAppointment) {
-            deleteAppointment(currentAppointment.id);
-          }
-        }}
-        initialData={currentAppointment}
-        title={editingSlot ? `Editar: ${format(new Date(editingSlot.date), 'dd/MM')} - ${editingSlot.time}` : ''}
-        startTime={editingSlot?.time || ''}
-        mechanics={mechanics}
-        currentMechanicId={editingSlot?.mechanicId || ''}
-      />
-
-      <AIChat mechanics={mechanics} onSchedule={handleAISchedule} />
+      {currentView === 'dashboard' && <Dashboard />}
     </div>
   );
 }
